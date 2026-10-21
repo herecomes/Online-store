@@ -4,7 +4,7 @@ import { useGetProductsQuery } from '../services/productsApi';
 const ProductCatalog = () => {
   const [limit, setLimit] = useState(21);
   const [currPage, setCurrPage] = useState(1);
-  const { data, isLoading, error } = useGetProductsQuery({ skip: currPage == 1 ? 0 : limit * (currPage - 1), limit: limit });
+  const { data, isLoading, error } = useGetProductsQuery({ skip: currPage === 1 ? 0 : limit * (currPage - 1), limit: limit });
 
   if (isLoading) {
     return <div className="text-center p-8">Loading products...</div>;
