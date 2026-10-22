@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useGetProductsQuery } from '../services/productsApi';
+import { current } from '@reduxjs/toolkit';
 
 const ProductCatalog = () => {
   const [limit, setLimit] = useState(21);
   const [currPage, setCurrPage] = useState(1);
-  const { data, isLoading, error } = useGetProductsQuery({ skip: currPage === 1 ? 0 : limit * (currPage - 1), limit: limit });
+  const [sortBy, setSortBy] = useState("id");
+  const [order, setOrder] = useState<"asc" | "desc">("asc");
+  const { data, isLoading, error } = useGetProductsQuery({ skip: currPage === 1 ? 0 : limit * (currPage - 1), limit: limit, sortBy: sortBy, order: order});
 
   if (isLoading) {
     return <div className="text-center p-8">Loading products...</div>;
@@ -17,6 +20,10 @@ const ProductCatalog = () => {
   const overalProducts = data?.total ? data?.total : 0;
   const totalPages = Math.ceil(overalProducts / limit);
   console.log(overalProducts);
+  
+  const orderToggle = (e: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
+    console.log(e);
+  };
 
   return (
     <div className="p-6">
@@ -27,6 +34,12 @@ const ProductCatalog = () => {
         <option value="27">27</option>
         <option value="30">30</option>
       </select>
+      <select name="sort" id="sort" onChange={(e) => setSortBy(e.target.value)}>
+        <option value="id" selected>id</option>
+        <option value="title">title</option>
+        <option value="price">price</option>
+      </select>
+      <button onClick={() => setOrder(current => current === "asc" ? "desc" : "asc")}>Order by: <span>{order}</span></button>
       <div className="pagination">
         <nav aria-label="Product pages">
           {
