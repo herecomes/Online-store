@@ -1,13 +1,26 @@
 import React, { useState } from 'react';
 import { useGetProductsQuery } from '../services/productsApi';
-import { current } from '@reduxjs/toolkit';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { changeLimit, changeOrder, changeSkip, changeSortBy } from '../store/slices/queries';
 
 const ProductCatalog = () => {
-  const [limit, setLimit] = useState(21);
   const [currPage, setCurrPage] = useState(1);
-  const [sortBy, setSortBy] = useState("id");
-  const [order, setOrder] = useState<"asc" | "desc">("asc");
-  const { data, isLoading, error } = useGetProductsQuery({ skip: currPage === 1 ? 0 : limit * (currPage - 1), limit: limit, sortBy: sortBy, order: order});
+  
+  const limitSlice = useAppSelector((state) => state.queries.limit);
+  const skipSlice = useAppSelector((state) => state.queries.skip);
+  const sortBySlice = useAppSelector((state) => state.queries.sortBy);
+  const orderSlice = useAppSelector((state) => state.queries.order);
+  const searchSlice = useAppSelector((state) => state.queries.search);
+
+  const dispatch = useAppDispatch();
+
+  if(currPage !== 1) {
+    dispatch(changeSkip(limitSlice * (currPage - 1)))
+  } else {
+    dispatch(changeSkip(0));
+  }
+
+  const { data, isLoading, error } = useGetProductsQuery({ skip: skipSlice, limit: limitSlice, sortBy: sortBySlice, order: orderSlice, search: searchSlice});
 
   if (isLoading) {
     return <div className="text-center p-8">Loading products...</div>;
@@ -18,28 +31,24 @@ const ProductCatalog = () => {
   }
 
   const overalProducts = data?.total ? data?.total : 0;
-  const totalPages = Math.ceil(overalProducts / limit);
+  const totalPages = Math.ceil(overalProducts / limitSlice);
   console.log(overalProducts);
-  
-  const orderToggle = (e: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
-    console.log(e);
-  };
 
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">Product Catalog</h1>
-      <select name="pageLimit" id="pageLimit" onChange={(e) => { setLimit(Number(e.target.value)); setCurrPage(1); }}>
+      <select name="pageLimit" id="pageLimit" onChange={(e) => { dispatch(changeLimit(Number(e.target.value))); setCurrPage(1); }}>
         <option value="21" selected>21</option>
         <option value="24">24</option>
         <option value="27">27</option>
         <option value="30">30</option>
       </select>
-      <select name="sort" id="sort" onChange={(e) => setSortBy(e.target.value)}>
+      <select name="sort" id="sort" onChange={(e) => dispatch(changeSortBy((e.target.value)))}>
         <option value="id" selected>id</option>
         <option value="title">title</option>
         <option value="price">price</option>
       </select>
-      <button onClick={() => setOrder(current => current === "asc" ? "desc" : "asc")}>Order by: <span>{order}</span></button>
+      <button onClick={() => orderSlice === "asc" ? dispatch(changeOrder("desc")) : dispatch(changeOrder("asc"))}>Order by: <span>{orderSlice}</span></button>
       <div className="pagination">
         <nav aria-label="Product pages">
           {
