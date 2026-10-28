@@ -1,9 +1,10 @@
 import { NavLink } from "react-router-dom";
-import { changeLimit } from "../store/slices/queries";
-import { useAppDispatch } from "../store/hooks";
+import { changeLimit, changeSearch } from "../store/slices/queries";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 export const Header = () => {
     const dispatch = useAppDispatch();
+    const searchSlice = useAppSelector((state) => state.queries.search);
     return(
         <header>
             <nav>
@@ -28,13 +29,7 @@ export const Header = () => {
                     Catalog
                 </NavLink>
             </nav>
-            
-                  <select name="pageLimit" id="pageLimit" onChange={(e) => { dispatch(changeLimit(Number(e.target.value))); }}>
-                    <option value="21" selected>21</option>
-                    <option value="24">24</option>
-                    <option value="27">27</option>
-                    <option value="30">30</option>
-                  </select>
+            <input className="border" type="text" onChange={(e) => dispatch(changeSearch(e.target.value))} value={searchSlice}/>
         </header>
     );
 }
