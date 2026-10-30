@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { changeLimit, changeSearch } from "../store/slices/queries";
+import { changeSearch, changeSkip } from "../store/slices/queries";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 export const Header = () => {
@@ -29,7 +29,7 @@ export const Header = () => {
                     Catalog
                 </NavLink>
             </nav>
-            <input className="border" type="text" onChange={(e) => dispatch(changeSearch(e.target.value))} value={searchSlice}/>
+            <input className="border" type="text" onChange={(e) => dispatch(changeSearch(e.target.value),changeSkip(0))} value={searchSlice}/>
         </header>
     );
 }

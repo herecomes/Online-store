@@ -13,6 +13,7 @@ export interface Responses {
   sortBy: "id" | "title" | "price";
   order: "asc" | "desc";
   search: string;
+  page: number;
 }
 interface ProductsResponse {
   products: Product[];
@@ -29,7 +30,10 @@ export const productsApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: 'https://dummyjson.com/' }),
   endpoints: (builder) => ({
     getProducts: builder.query<ProductsResponse, {skip: Responses["skip"], limit: Responses["limit"], sortBy: Responses["sortBy"], order: Responses["order"], search: Responses["search"]}>({
-      query: (params) => `products?limit=${params.limit}&skip=${params.skip}&sortBy=${params.sortBy}&order=${params.order}&search=${params.search}`,
+      query: (params) => 
+        params.search ? 
+        `products/search?q=${params.search}&limit=${params.limit}&skip=${params.skip}&sortBy=${params.sortBy}&order=${params.order}` :
+        `products?limit=${params.limit}&skip=${params.skip}&sortBy=${params.sortBy}&order=${params.order}`,
     }),
   }),
 });

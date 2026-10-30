@@ -6,7 +6,8 @@ const initialState: Responses = {
     limit: 21,
     sortBy: "id",
     order: "asc",
-    search: ""
+    search: "",
+    page: 1
 }
 const querySlice = createSlice({
     name: "queries",
@@ -26,9 +27,13 @@ const querySlice = createSlice({
         },
         changeSearch: (state, action) => {
             state.search = action.payload
+        },
+        changePage: (state, action) => {
+            state.page = action.payload;
+            changeSkip(state.limit * (state.page - 1));
         }
     }
 });
 
-export const {changeSkip, changeLimit, changeSortBy, changeOrder, changeSearch} = querySlice.actions;
+export const {changeSkip, changeLimit, changeSortBy, changeOrder, changeSearch, changePage} = querySlice.actions;
 export default querySlice.reducer;
