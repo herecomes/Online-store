@@ -35,7 +35,10 @@ export const productsApi = createApi({
         `products/search?q=${params.search}&limit=${params.limit}&skip=${params.skip}&sortBy=${params.sortBy}&order=${params.order}` :
         `products?limit=${params.limit}&skip=${params.skip}&sortBy=${params.sortBy}&order=${params.order}`,
     }),
+    searchResults: builder.query<ProductsResponse, {search: Responses["search"]}>({
+      query: (params) => `products/search?q=${params.search}&limit=5&skip=0`,
+    })
   }),
 });
 
-export const { useGetProductsQuery } = productsApi;
+export const { useGetProductsQuery, useSearchResultsQuery } = productsApi;

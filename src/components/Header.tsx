@@ -1,10 +1,13 @@
 import { NavLink } from "react-router-dom";
 import { changeSearch, changeSkip } from "../store/slices/queries";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { useSearchResultsQuery } from "../services/productsApi";
 
 export const Header = () => {
     const dispatch = useAppDispatch();
     const searchSlice = useAppSelector((state) => state.queries.search);
+    const {data, isLoading, error} = useSearchResultsQuery({search: searchSlice}, {skip: searchSlice.length < 3});
+    console.log(searchSlice)
     return(
         <header>
             <nav>
@@ -29,7 +32,23 @@ export const Header = () => {
                     Catalog
                 </NavLink>
             </nav>
-            <input className="border" type="text" onChange={(e) => dispatch(changeSearch(e.target.value),changeSkip(0))} value={searchSlice}/>
+            <input name="header-search" className="border" type="text" onChange={(e) => dispatch(changeSearch(e.target.value),changeSkip(0))} value={searchSlice}/>
+            
+            <div className="flex flex-col gap-3">
+                {searchSlice.trim().length >= 3 && data?.products.map((product) => (
+                <div key={product.id} className="border p-4 rounded-lg shadow-sm flex flex-row">
+                    <img
+                    src={product.thumbnail}
+                    alt={product.title}
+                    className="h-24 object-cover rounded"
+                    />
+                    <div className="flex flex-col">
+                        <h2 className="font-semibold text-lg">{product.title}</h2>
+                        <p className="text-green-600 font-bold">${product.price}</p>
+                    </div>
+                </div>
+                ))}
+            </div>
         </header>
     );
 }
