@@ -26,11 +26,13 @@ const querySlice = createSlice({
             state.order = action.payload
         },
         changeSearch: (state, action) => {
-            state.search = action.payload
+            state.search = action.payload;
+            state.page = 1;
+            state.skip = 0;
         },
         changePage: (state, action) => {
             state.page = action.payload;
-            changeSkip(state.limit * (state.page - 1));
+            state.skip = state.limit * (state.page - 1);
         }
     }
 });

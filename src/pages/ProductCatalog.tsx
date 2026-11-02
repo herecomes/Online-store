@@ -25,7 +25,7 @@ const ProductCatalog = () => {
 
   const overalProducts = data?.total ? data?.total : 0;
   const totalPages = Math.ceil(overalProducts / limitSlice);
-  console.log(overalProducts);
+  console.log(pageSlice);
 
   return (
     <div className="p-6">
