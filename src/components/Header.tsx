@@ -6,7 +6,7 @@ import { useSearchResultsQuery } from "../services/productsApi";
 export const Header = () => {
     const dispatch = useAppDispatch();
     const searchSlice = useAppSelector((state) => state.queries.search);
-    const {data, isLoading, error} = useSearchResultsQuery({search: searchSlice}, {skip: searchSlice.length < 3});
+    const {data} = useSearchResultsQuery({search: searchSlice}, {skip: searchSlice.length < 3});
     console.log(searchSlice)
     return(
         <header>
@@ -30,6 +30,16 @@ export const Header = () => {
                     }`
                 }>
                     Catalog
+                </NavLink>
+                <NavLink to="/cart" className={
+                    ({ isActive }) =>
+                    `px-3 py-2 rounded-md text-sm font-medium ${
+                    isActive
+                        ? "bg-indigo-600 text-white"
+                        : "text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
+                    }`
+                }>
+                    Cart
                 </NavLink>
             </nav>
             <input name="header-search" className="border" type="text" onChange={(e) => dispatch(changeSearch(e.target.value),changeSkip(0))} value={searchSlice}/>

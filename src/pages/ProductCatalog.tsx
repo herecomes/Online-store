@@ -1,6 +1,7 @@
 import { useGetProductsQuery } from '../services/productsApi';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { changeLimit, changeOrder, changeSkip, changeSortBy, changePage } from '../store/slices/queries';
+import { changeLimit, changeOrder, changeSortBy, changePage } from '../store/slices/queries';
+import { addCart, removeCart } from '../store/slices/cartSlice';
 
 const ProductCatalog = () => {
   
@@ -14,6 +15,7 @@ const ProductCatalog = () => {
   const dispatch = useAppDispatch();
 
   const { data, isLoading, error } = useGetProductsQuery({ skip: skipSlice, limit: limitSlice, sortBy: sortBySlice, order: orderSlice, search: searchSlice});
+
 
   if (isLoading) {
     return <div className="text-center p-8">Loading products...</div>;
@@ -62,6 +64,15 @@ const ProductCatalog = () => {
             />
             <h2 className="font-semibold text-lg">{product.title}</h2>
             <p className="text-green-600 font-bold">${product.price}</p>
+            <button key={'add-to-cart_'+product.id} onClick={() => {
+              dispatch(addCart({
+                id: 1,
+                products: [{
+                  id: product.id,
+                  qty: 1
+                }]
+              }))
+              }}>Add to cart</button>
           </div>
         ))}
       </div>
