@@ -66,12 +66,9 @@ const ProductCatalog = () => {
             <p className="text-green-600 font-bold">${product.price}</p>
             <button key={'add-to-cart_'+product.id} onClick={() => {
               dispatch(addCart({
-                id: 1,
-                products: [{
                   id: product.id,
                   qty: 1
-                }]
-              }))
+                }))
               }}>Add to cart</button>
           </div>
         ))}

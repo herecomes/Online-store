@@ -20,22 +20,26 @@ const cartSlice = createSlice({
     initialState: initialState,
     reducers: {
         addCart: (state, action) => {
-            if(!state.products.length) {
+            const stored = localStorage.getItem("Products");
+            const productsLocal = stored && JSON.parse(stored);
+            if(!productsLocal.id) {
                 state.id = 1;
-                state.products = action.payload;
-            } else {
-                action.payload.forEach((el: products) => {
-                    const existedProduct = state.products.find(pr => pr.id === el.id);
-                    if(existedProduct) {
-                        existedProduct.qty += el.qty;
-                    } else {
-                        state.products.push(el);
-                    }
-                });
+                state.products.push(action.payload);
+                localStorage.setItem("Products", JSON.stringify(state));
             }
-            const productsJSON = JSON.stringify(state);
-            localStorage.setItem("Products", productsJSON);
-            console.log(state.products)
+            else {
+                const productsJSON = JSON.parse(stored!);
+                const existedProduct = productsJSON.products.find((p:products) => p.id === action.payload.id);
+
+                if (existedProduct) {
+                    existedProduct.qty += action.payload.qty;
+                    console.log(existedProduct)
+                } else {
+                    productsJSON.products.push(action.payload);
+                }
+
+                localStorage.setItem("Products", JSON.stringify(productsJSON));
+            }
         },
         removeCart: (state, action) => {
             if(state.products.length) {
